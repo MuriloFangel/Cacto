@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cacto Filho da Puta</title>
+    <style>
+        body {
+            background-color: #f0f8f0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            color: #2e8b57;
+        }
+
+
+        h1 {
+            font-size: 4em;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #006400;
+        }
+
+
+        .central-section {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-size: 1.5em;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #c5e3c5;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+
+        #message {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+
+        #note {
+            font-size: 1em;
+            color: #555;
+            margin-top: 10px;
+        }
+
+
+        button {
+            padding: 10px 20px;
+            font-size: 1.5em;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+
+        button.green {
+            background-color: #32CD32;
+            color: white;
+        }
+
+
+        button.gray {
+            background-color: #A9A9A9;
+            color: white;
+            cursor: not-allowed;
+        }
+
+
+        button.red {
+            background-color: #FF6347;
+            color: white;
+        }
+
+
+        .stats {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cacto Filho da Puta</h1>
+    <div class="central-section">
+        <div id="message"></div>
+        <button id="waterButton" onclick="waterCactus()">Molhei esse fdp!</button>
+        <div id="note"></div>
+        <div class="stats">
+            <p>Estatísticas:</p>
+            <p id="wetDays">Dias molhados: 0</p>
+            <p id="lateDays">Dias atrasados: 0</p>
+            <p id="adoptiveAge">Idade adotiva: 0</p>
+        </div>
+    </div>
+    <script>
+        // Configurações iniciais
+        const adoptedDate = new Date('2024-08-26');
+        let wetDays = 0;
+        let lateDays = 0;
+        let lastWatered = null;
+
+
+        function updateStats() {
+            const now = new Date();
+            const diff = Math.floor((now - adoptedDate) / (1000 * 60 * 60 * 24));
+            document.getElementById('adoptiveAge').innerText = `Idade adotiva: ${diff} dias`;
+            document.getElementById('wetDays').innerText = `Dias molhados: ${wetDays}`;
+            document.getElementById('lateDays').innerText = `Dias atrasados: ${lateDays}`;
+        }
+
+
+        function updateUI() {
+            const now = new Date();
+            const day = now.getDate();
+            const isFirstOrFifteenth = (day === 1 || day === 15);
+            const button = document.getElementById('waterButton');
+            const message = document.getElementById('message');
+            const note = document.getElementById('note');
+
+
+            if (isFirstOrFifteenth) {
+                if (!lastWatered || lastWatered.getDate() !== day) {
+                    message.innerText = "Hoje é dia de dar alimento pra esse pobre coitado!";
+                    note.innerText = "Pingue algumas gotas de água só na terra o suficiente para umidecer. Ele não sabe nadar.";
+                    button.className = 'green';
+                    button.disabled = false;
+                } else {
+                    message.innerText = `Ainda não precisa se preocupar, você molhou faz ${Math.floor((now - lastWatered) / (1000 * 60 * 60 * 24))} dias. Volte daqui ${day === 1 ? 14 : 16} dias.`;
+                    note.innerText = "Não bota a mão nele por favor";
+                    button.className = 'gray';
+                    button.disabled = true;
+                }
+            } else {
+                if (lastWatered && (now - lastWatered) < (1000 * 60 * 60 * 24)) {
+                    message.innerText = `Ainda não precisa se preocupar, você molhou faz ${Math.floor((now - lastWatered) / (1000 * 60 * 60 * 24))} dias. Volte daqui ${Math.abs(15 - day)} dias.`;
+                    note.innerText = "Não bota a mão nele por favor";
+                    button.className = 'gray';
+                    button.disabled = true;
+                } else {
+                    const missedDays = Math.abs(now.getDate() - lastWatered.getDate());
+                    message.innerText = "Opa, você esqueceu de molhar!";
+                    note.innerText = `Você deixou o coitado sem água por ${missedDays} dias.`;
+                    button.className = 'red';
+                    button.disabled = false;
+                    lateDays++;
+                }
+            }
+            updateStats();
+        }
+
+
+        function waterCactus() {
+            lastWatered = new Date();
+            wetDays++;
+            const button = document.getElementById('waterButton');
+            button.className = 'gray';
+            button.disabled = true;
+            updateUI();
+        }
+
+
+        // Atualiza a interface ao carregar a página
+        window.onload = updateUI;
+    </script>
+</body>
+</html>
